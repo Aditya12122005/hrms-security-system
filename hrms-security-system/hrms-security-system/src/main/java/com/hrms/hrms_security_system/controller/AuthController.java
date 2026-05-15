@@ -1,5 +1,7 @@
 package com.hrms.hrms_security_system.controller;
 
+import com.hrms.hrms_security_system.dto.AuthResponse;
+import com.hrms.hrms_security_system.dto.LoginRequest;
 import com.hrms.hrms_security_system.dto.RegisterRequest;
 import com.hrms.hrms_security_system.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +17,10 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }

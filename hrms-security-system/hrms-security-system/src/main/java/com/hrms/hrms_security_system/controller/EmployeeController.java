@@ -1,14 +1,42 @@
 package com.hrms.hrms_security_system.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.hrms.hrms_security_system.entity.Employee;
+import com.hrms.hrms_security_system.service.EmployeeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/api/employees")
+@RequiredArgsConstructor
+
+@CrossOrigin(origins = "http://localhost:5173")
+
 public class EmployeeController {
 
-    @GetMapping("/api/employees")
-    public String getEmployees() {
+    private final EmployeeService employeeService;
 
-        return "Protected Employee Data Accessed Successfully";
+    @PostMapping
+    public Employee createEmployee(
+            @RequestBody Employee employee
+    ) {
+
+        return employeeService.createEmployee(employee);
     }
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+
+        return employeeService.getAllEmployees();
+    }
+    @DeleteMapping("/{id}")
+
+    public void deleteEmployee(
+            @PathVariable Long id
+    ) {
+
+        employeeService.deleteEmployee(id);
+    }
+
 }

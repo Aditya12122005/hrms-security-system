@@ -1,5 +1,6 @@
 package com.hrms.hrms_security_system.security;
 
+
 import com.hrms.hrms_security_system.service.CustomUserDetailsService;
 import com.hrms.hrms_security_system.util.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -41,6 +42,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         final String username;
 
+        String path = request.getServletPath();
+
+        if (path.startsWith("/api/auth") ||
+                path.startsWith("/api/employees")) {
+
+            filterChain.doFilter(request, response);
+
+            return;
+        }
+
         if (authHeader == null ||
                 !authHeader.startsWith("Bearer ")) {
 
@@ -48,6 +59,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             return;
         }
+
 
         jwt = authHeader.substring(7);
 

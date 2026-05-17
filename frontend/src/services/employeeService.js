@@ -35,3 +35,19 @@ export const deleteEmployee = async (id) => {
         }
     )
 }
+export const updateEmployee = async (id, employeeData) => {
+
+    const token = localStorage.getItem("token")
+
+    const response = await axios.put(
+        `http://localhost:8080/api/employees/${id}`,
+        employeeData,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    return response.data
+}

@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react"
+import {
+    FaSearch,
+    FaPlus,
+    FaEdit,
+    FaTrash
+} from "react-icons/fa"
 
 import {
     getEmployees,
@@ -6,6 +12,7 @@ import {
 } from "../services/employeeService"
 
 import AddEmployeeModal from "../components/AddEmployeeModal"
+import EditEmployeeModal from "../components/EditEmployeeModal"
 
 function EmployeesPage() {
 
@@ -14,6 +21,10 @@ function EmployeesPage() {
     const [searchTerm, setSearchTerm] = useState("")
 
     const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
+    const [selectedEmployee, setSelectedEmployee] = useState(null)
 
     useEffect(() => {
 
@@ -49,6 +60,13 @@ function EmployeesPage() {
         }
     }
 
+    const handleEditClick = (employee) => {
+
+        setSelectedEmployee(employee)
+
+        setIsEditModalOpen(true)
+    }
+
     const filteredEmployees = employees.filter((employee) =>
 
         `${employee.firstName} ${employee.lastName}`
@@ -70,7 +88,7 @@ function EmployeesPage() {
 
     return (
 
-        <div className="w-full max-w-7xl mx-auto">
+        <div className="w-full max-w-7xl mx-auto pb-12 animate-fade-in">
 
             {/* HEADER */}
 
@@ -79,12 +97,10 @@ function EmployeesPage() {
                     flex
                     flex-col
                     md:flex-row
-
                     md:items-center
-                    md:justify-between
+                    justify-between
 
                     gap-6
-
                     mb-8
                 "
             >
@@ -94,12 +110,42 @@ function EmployeesPage() {
                     <h1
                         className="
                             text-3xl
-                            font-semibold
+                            font-bold
                             tracking-tight
                             text-white
+
+                            flex
+                            items-center
+                            gap-3
                         "
                     >
+
                         Employees
+
+                        <span
+                            className="
+                                px-3
+                                py-1
+
+                                rounded-full
+
+                                bg-indigo-500/10
+                                border
+                                border-indigo-500/20
+
+                                text-indigo-400
+                                text-xs
+                                font-semibold
+
+                                uppercase
+                                tracking-wider
+                            "
+                        >
+
+                            {employees.length} Total
+
+                        </span>
+
                     </h1>
 
                     <p
@@ -109,83 +155,133 @@ function EmployeesPage() {
                             text-sm
                         "
                     >
-                        Manage employees, departments and workforce operations.
+                        Manage your workforce directory,
+                        roles, and compensation details.
                     </p>
 
                 </div>
 
-                <button
+                <div className="flex items-center gap-4">
 
-                    onClick={() => setIsModalOpen(true)}
+                    {/* SEARCH */}
 
-                    className="
-                        h-11
+                    <div
+                        className="
+                            relative
+                            group
 
-                        px-5
+                            w-full
+                            md:w-[320px]
+                        "
+                    >
 
-                        rounded-xl
+                        <FaSearch
+                            className="
+                                absolute
+                                left-4
+                                top-1/2
+                                -translate-y-1/2
 
-                        bg-[#6366F1]
-                        hover:bg-[#4F46E5]
+                                text-[#64748B]
+                                text-sm
 
-                        text-white
-                        text-sm
-                        font-medium
+                                group-focus-within:text-indigo-400
+                                transition-colors
+                            "
+                        />
 
-                        transition-all
-                        duration-200
-                    "
-                >
-                    Add Employee
-                </button>
+                        <input
+                            type="text"
 
-            </div>
+                            placeholder="Search employees..."
 
-            {/* SEARCH */}
+                            value={searchTerm}
 
-            <div className="mb-6">
+                            onChange={(e) =>
+                                setSearchTerm(e.target.value)
+                            }
 
-                <input
-                    type="text"
+                            className="
+                                w-full
+                                h-11
 
-                    placeholder="Search employees..."
+                                bg-[#111827]/80
+                                backdrop-blur-sm
 
-                    value={searchTerm}
+                                border
+                                border-[#1E293B]
 
-                    onChange={(e) =>
-                        setSearchTerm(e.target.value)
-                    }
+                                rounded-xl
 
-                    className="
-                        w-full
-                        md:w-[320px]
+                                pl-11
+                                pr-4
 
-                        h-11
+                                text-sm
+                                text-white
 
-                        bg-[#111827]
+                                placeholder:text-[#64748B]
 
-                        border
-                        border-[#334155]
+                                outline-none
 
-                        rounded-xl
+                                focus:border-indigo-500/50
+                                focus:ring-2
+                                focus:ring-indigo-500/20
+                                focus:bg-[#1E293B]/50
 
-                        px-4
+                                transition-all
+                                duration-300
 
-                        text-sm
-                        text-white
+                                shadow-sm
+                            "
+                        />
 
-                        placeholder:text-[#64748B]
+                    </div>
 
-                        outline-none
+                    {/* ADD EMPLOYEE BUTTON */}
 
-                        focus:border-[#6366F1]
-                        focus:ring-4
-                        focus:ring-indigo-500/10
+                    <button
 
-                        transition-all
-                        duration-200
-                    "
-                />
+                        onClick={() =>
+                            setIsModalOpen(true)
+                        }
+
+                        className="
+                            h-11
+                            px-5
+
+                            rounded-xl
+
+                            bg-gradient-to-r
+                            from-indigo-500
+                            to-purple-500
+
+                            text-white
+                            text-sm
+                            font-bold
+
+                            flex
+                            items-center
+                            gap-2
+
+                            shadow-[0_0_15px_rgba(99,102,241,0.3)]
+
+                            hover:shadow-[0_0_25px_rgba(99,102,241,0.5)]
+                            hover:-translate-y-0.5
+
+                            transition-all
+                            duration-300
+
+                            whitespace-nowrap
+                        "
+                    >
+
+                        <FaPlus className="text-xs" />
+
+                        Add Employee
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -195,311 +291,458 @@ function EmployeesPage() {
                 className="
                     overflow-hidden
 
-                    bg-[#1E293B]
+                    bg-[#1E293B]/50
+                    backdrop-blur-xl
 
                     border
                     border-[#334155]
 
-                    rounded-2xl
+                    rounded-3xl
+
+                    shadow-xl
+
+                    relative
+                    z-10
                 "
             >
 
-                <table className="w-full">
+                <div className="overflow-x-auto">
 
-                    {/* TABLE HEADER */}
-
-                    <thead
+                    <table
                         className="
-                            bg-[#111827]
-
-                            border-b
-                            border-[#334155]
+                            w-full
+                            text-left
+                            border-collapse
                         "
                     >
 
-                        <tr>
+                        {/* HEADER */}
 
-                            <th
-                                className="
-                                    p-5
+                        <thead
+                            className="
+                                bg-[#0B1120]/50
+                                border-b
+                                border-[#334155]
+                            "
+                        >
 
-                                    text-left
+                            <tr>
 
-                                    text-sm
-                                    font-semibold
+                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                    Employee
+                                </th>
 
-                                    text-white
-                                "
-                            >
-                                Employee
-                            </th>
+                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                    Department
+                                </th>
 
-                            <th
-                                className="
-                                    p-5
+                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                    Role
+                                </th>
 
-                                    text-left
+                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                    Salary
+                                </th>
 
-                                    text-sm
-                                    font-semibold
+                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider text-right">
+                                    Actions
+                                </th>
 
-                                    text-white
-                                "
-                            >
-                                Department
-                            </th>
+                            </tr>
 
-                            <th
-                                className="
-                                    p-5
+                        </thead>
 
-                                    text-left
+                        {/* BODY */}
 
-                                    text-sm
-                                    font-semibold
+                        <tbody
+                            className="
+                                divide-y
+                                divide-[#334155]/50
+                            "
+                        >
 
-                                    text-white
-                                "
-                            >
-                                Role
-                            </th>
+                            {filteredEmployees.length > 0 ? (
 
-                            <th
-                                className="
-                                    p-5
+                                filteredEmployees.map((employee) => (
 
-                                    text-left
+                                    <tr
+                                        key={employee.id}
 
-                                    text-sm
-                                    font-semibold
+                                        className="
+                                            group
+                                            hover:bg-white/[0.02]
 
-                                    text-white
-                                "
-                            >
-                                Salary
-                            </th>
+                                            transition-colors
+                                            duration-300
+                                        "
+                                    >
 
-                            <th
-                                className="
-                                    p-5
+                                        {/* EMPLOYEE */}
 
-                                    text-left
-
-                                    text-sm
-                                    font-semibold
-
-                                    text-white
-                                "
-                            >
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    {/* TABLE BODY */}
-
-                    <tbody>
-
-                        {
-                            filteredEmployees.map((employee) => (
-
-                                <tr
-                                    key={employee.id}
-
-                                    className="
-                                        border-b
-                                        border-[#334155]
-
-                                        hover:bg-white/5
-
-                                        transition-all
-                                        duration-200
-                                    "
-                                >
-
-                                    {/* EMPLOYEE */}
-
-                                    <td className="p-5">
-
-                                        <div
-                                            className="
-                                                flex
-                                                items-center
-                                                gap-4
-                                            "
-                                        >
-
-                                            {/* AVATAR */}
+                                        <td className="p-5">
 
                                             <div
                                                 className="
-                                                    w-10
-                                                    h-10
-
-                                                    rounded-full
-
-                                                    bg-[#6366F1]/15
-
                                                     flex
                                                     items-center
-                                                    justify-center
-
-                                                    text-[#818CF8]
-                                                    text-sm
-                                                    font-semibold
+                                                    gap-4
                                                 "
                                             >
 
-                                                {
-                                                    employee.firstName?.charAt(0)
-                                                }
-
-                                            </div>
-
-                                            {/* INFO */}
-
-                                            <div>
-
-                                                <h3
+                                                <div
                                                     className="
+                                                        w-10
+                                                        h-10
+
+                                                        rounded-full
+
+                                                        bg-gradient-to-br
+                                                        from-indigo-500/20
+                                                        to-purple-500/20
+
+                                                        border
+                                                        border-indigo-500/30
+
+                                                        flex
+                                                        items-center
+                                                        justify-center
+
+                                                        text-indigo-300
                                                         text-sm
-                                                        font-medium
-                                                        text-white
+                                                        font-bold
+
+                                                        group-hover:scale-110
+                                                        group-hover:border-indigo-500/50
+
+                                                        group-hover:shadow-[0_0_15px_rgba(99,102,241,0.2)]
+
+                                                        transition-all
+                                                        duration-300
                                                     "
                                                 >
-                                                    {employee.firstName}
-                                                    {" "}
-                                                    {employee.lastName}
-                                                </h3>
+
+                                                    {employee.firstName?.charAt(0)}
+                                                    {employee.lastName?.charAt(0)}
+
+                                                </div>
+
+                                                <div>
+
+                                                    <h3
+                                                        className="
+                                                            text-sm
+                                                            font-bold
+                                                            text-white
+
+                                                            group-hover:text-indigo-300
+
+                                                            transition-colors
+                                                        "
+                                                    >
+
+                                                        {employee.firstName}
+                                                        {" "}
+                                                        {employee.lastName}
+
+                                                    </h3>
+
+                                                    <p
+                                                        className="
+                                                            text-xs
+                                                            text-[#64748B]
+                                                            mt-0.5
+                                                        "
+                                                    >
+
+                                                        {employee.email ||
+                                                            `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}@company.com`
+                                                        }
+
+                                                    </p>
+
+                                                </div>
 
                                             </div>
 
-                                        </div>
+                                        </td>
 
-                                    </td>
+                                        {/* DEPARTMENT */}
 
-                                    {/* DEPARTMENT */}
+                                        <td className="p-5">
 
-                                    <td
-                                        className="
-                                            p-5
-
-                                            text-sm
-                                            text-[#94A3B8]
-                                        "
-                                    >
-                                        {employee.department}
-                                    </td>
-
-                                    {/* ROLE */}
-
-                                    <td
-                                        className="
-                                            p-5
-
-                                            text-sm
-                                            text-[#94A3B8]
-                                        "
-                                    >
-                                        {employee.role}
-                                    </td>
-
-                                    {/* SALARY */}
-
-                                    <td
-                                        className="
-                                            p-5
-
-                                            text-sm
-                                            font-medium
-
-                                            text-white
-                                        "
-                                    >
-                                        ₹{employee.salary}
-                                    </td>
-
-                                    {/* ACTIONS */}
-
-                                    <td className="p-5">
-
-                                        <div className="flex gap-3">
-
-                                            <button
+                                            <span
                                                 className="
-                                                    px-4
-                                                    h-9
+                                                    inline-flex
+                                                    items-center
 
-                                                    rounded-lg
+                                                    px-2.5
+                                                    py-1
 
-                                                    bg-[#6366F1]/10
+                                                    rounded-md
 
-                                                    text-[#818CF8]
-                                                    text-sm
+                                                    bg-[#334155]/50
+
+                                                    border
+                                                    border-[#475569]/50
+
+                                                    text-xs
                                                     font-medium
 
-                                                    hover:bg-[#6366F1]/20
+                                                    text-[#E2E8F0]
 
-                                                    transition-all
-                                                    duration-200
+                                                    group-hover:border-[#64748B]
+
+                                                    transition-colors
                                                 "
                                             >
-                                                Edit
-                                            </button>
 
-                                            <button
+                                                {employee.department}
 
-                                                onClick={() =>
-                                                    handleDelete(employee.id)
-                                                }
+                                            </span>
 
+                                        </td>
+
+                                        {/* ROLE */}
+
+                                        <td
+                                            className="
+                                                p-5
+                                                text-sm
+                                                font-medium
+
+                                                text-[#94A3B8]
+
+                                                group-hover:text-white
+
+                                                transition-colors
+                                            "
+                                        >
+
+                                            {employee.role}
+
+                                        </td>
+
+                                        {/* SALARY */}
+
+                                        <td
+                                            className="
+                                                p-5
+                                                text-sm
+                                                font-bold
+                                                text-white
+                                            "
+                                        >
+
+                                            ₹{employee.salary?.toLocaleString()}
+
+                                        </td>
+
+                                        {/* ACTIONS */}
+
+                                        <td className="p-5 text-right">
+
+                                            <div
                                                 className="
-                                                    px-4
-                                                    h-9
+                                                    flex
+                                                    items-center
+                                                    justify-end
+                                                    gap-2
 
-                                                    rounded-lg
+                                                    opacity-0
+                                                    group-hover:opacity-100
 
-                                                    bg-red-500/10
-
-                                                    text-red-400
-                                                    text-sm
-                                                    font-medium
-
-                                                    hover:bg-red-500/20
-
-                                                    transition-all
-                                                    duration-200
+                                                    transition-opacity
+                                                    duration-300
                                                 "
                                             >
-                                                Delete
-                                            </button>
+
+                                                {/* EDIT */}
+
+                                                <button
+
+                                                    onClick={() =>
+                                                        handleEditClick(employee)
+                                                    }
+
+                                                    className="
+                                                        w-9
+                                                        h-9
+
+                                                        rounded-lg
+
+                                                        bg-indigo-500/10
+                                                        text-indigo-400
+
+                                                        flex
+                                                        items-center
+                                                        justify-center
+
+                                                        hover:bg-indigo-500
+                                                        hover:text-white
+
+                                                        hover:shadow-[0_0_10px_rgba(99,102,241,0.5)]
+
+                                                        hover:-translate-y-0.5
+
+                                                        transition-all
+                                                        duration-300
+                                                    "
+                                                >
+
+                                                    <FaEdit className="text-sm" />
+
+                                                </button>
+
+                                                {/* DELETE */}
+
+                                                <button
+
+                                                    onClick={() =>
+                                                        handleDelete(employee.id)
+                                                    }
+
+                                                    className="
+                                                        w-9
+                                                        h-9
+
+                                                        rounded-lg
+
+                                                        bg-red-500/10
+                                                        text-red-400
+
+                                                        flex
+                                                        items-center
+                                                        justify-center
+
+                                                        hover:bg-red-500
+                                                        hover:text-white
+
+                                                        hover:shadow-[0_0_10px_rgba(239,68,68,0.5)]
+
+                                                        hover:-translate-y-0.5
+
+                                                        transition-all
+                                                        duration-300
+                                                    "
+                                                >
+
+                                                    <FaTrash className="text-sm" />
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            ) : (
+
+                                <tr>
+
+                                    <td
+                                        colSpan="5"
+
+                                        className="
+                                            p-12
+                                            text-center
+                                        "
+                                    >
+
+                                        <div
+                                            className="
+                                                inline-flex
+                                                items-center
+                                                justify-center
+
+                                                w-16
+                                                h-16
+
+                                                rounded-full
+
+                                                bg-[#334155]/30
+
+                                                mb-4
+                                            "
+                                        >
+
+                                            <FaSearch
+                                                className="
+                                                    text-2xl
+                                                    text-[#64748B]
+                                                "
+                                            />
 
                                         </div>
+
+                                        <h3
+                                            className="
+                                                text-lg
+                                                font-medium
+                                                text-white
+                                                mb-1
+                                            "
+                                        >
+                                            No employees found
+                                        </h3>
+
+                                        <p
+                                            className="
+                                                text-sm
+                                                text-[#94A3B8]
+                                            "
+                                        >
+
+                                            {searchTerm
+                                                ? "Try adjusting your search terms."
+                                                : "Get started by adding a new employee."
+                                            }
+
+                                        </p>
 
                                     </td>
 
                                 </tr>
 
-                            ))
-                        }
+                            )}
 
-                    </tbody>
+                        </tbody>
 
-                </table>
+                    </table>
+
+                </div>
 
             </div>
 
-            {/* MODAL */}
+            {/* ADD MODAL */}
 
             <AddEmployeeModal
 
                 isOpen={isModalOpen}
 
-                onClose={() => setIsModalOpen(false)}
+                onClose={() =>
+                    setIsModalOpen(false)
+                }
 
                 onEmployeeAdded={fetchEmployees}
+
+            />
+
+            {/* EDIT MODAL */}
+
+            <EditEmployeeModal
+
+                isOpen={isEditModalOpen}
+
+                onClose={() =>
+                    setIsEditModalOpen(false)
+                }
+
+                employee={selectedEmployee}
+
+                onEmployeeUpdated={fetchEmployees}
 
             />
 

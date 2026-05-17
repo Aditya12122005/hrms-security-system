@@ -1,62 +1,47 @@
 import { Outlet } from "react-router-dom"
-
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/sidebar"
 import Topbar from "../components/Topbar"
 
 function DashboardLayout() {
-
     return (
-
-        <div
-            className="
-                flex
-                min-h-screen
-
-                bg-[#0F172A]
-                text-white
-            "
-        >
-
+        <div className="flex h-screen w-full bg-[#0B1120] text-white overflow-hidden selection:bg-indigo-500/30">
             {/* SIDEBAR */}
-
             <Sidebar />
 
-            {/* MAIN SECTION */}
-
-            <div
+            {/* MAIN APP AREA (Floating Pane Effect) */}
+            <div 
                 className="
-                    flex-1
-                    flex
-                    flex-col
-
-                    min-w-0
+                    flex-1 
+                    flex 
+                    flex-col 
+                    min-w-0 
+                    relative 
+                    bg-[#0F172A] 
+                    rounded-tl-[40px] 
+                    shadow-[-20px_0_50px_rgba(0,0,0,0.3)] 
+                    z-50 
+                    border-l 
+                    border-t 
+                    border-white/5 
+                    overflow-hidden
                 "
             >
+                {/* SUBTLE BACKGROUND GLOW */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
                 {/* TOPBAR */}
-
                 <Topbar />
 
-                {/* PAGE CONTENT */}
-
-                <main
-                    className="
-                        flex-1
-
-                        p-8
-
-                        overflow-y-auto
-
-                        bg-[#0F172A]
-                    "
-                >
-
-                    <Outlet />
+                {/* SCROLLABLE PAGE CONTENT */}
+                <main className="flex-1 overflow-y-auto overflow-x-hidden relative z-0 scroll-smooth">
+                    
+                    {/* ENTERPRISE CONTENT WRAPPER */}
+                    <div className="max-w-[1600px] mx-auto w-full p-8 md:p-10 lg:p-12">
+                        <Outlet />
+                    </div>
 
                 </main>
-
             </div>
-
         </div>
     )
 }

@@ -26,6 +26,7 @@ function LoginPage() {
         try {
             const response = await loginUser(formData)
             localStorage.setItem("token", response.token)
+            localStorage.setItem("role", response.role)
             navigate("/dashboard")
         } catch (err) {
             setError("Invalid username or password")

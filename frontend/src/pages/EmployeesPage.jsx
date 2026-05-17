@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+
 import {
     FaSearch,
     FaPlus,
@@ -11,20 +12,30 @@ import {
     deleteEmployee
 } from "../services/employeeService"
 
-import AddEmployeeModal from "../components/AddEmployeeModal"
-import EditEmployeeModal from "../components/EditEmployeeModal"
+import AddEmployeeModal
+from "../components/AddEmployeeModal"
+
+import EditEmployeeModal
+from "../components/EditEmployeeModal"
 
 function EmployeesPage() {
 
-    const [employees, setEmployees] = useState([])
+    const [employees, setEmployees] =
+        useState([])
 
-    const [searchTerm, setSearchTerm] = useState("")
+    const [searchTerm, setSearchTerm] =
+        useState("")
 
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalOpen, setIsModalOpen] =
+        useState(false)
 
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isEditModalOpen,
+        setIsEditModalOpen] =
+        useState(false)
 
-    const [selectedEmployee, setSelectedEmployee] = useState(null)
+    const [selectedEmployee,
+        setSelectedEmployee] =
+        useState(null)
 
     useEffect(() => {
 
@@ -36,7 +47,8 @@ function EmployeesPage() {
 
         try {
 
-            const data = await getEmployees()
+            const data =
+                await getEmployees()
 
             setEmployees(data)
 
@@ -46,49 +58,86 @@ function EmployeesPage() {
         }
     }
 
-    const handleDelete = async (id) => {
+    const handleDelete =
+        async (id) => {
 
-        try {
+            try {
 
-            await deleteEmployee(id)
+                await deleteEmployee(id)
 
-            fetchEmployees()
+                fetchEmployees()
 
-        } catch (error) {
+            } catch (error) {
 
-            console.log(error)
+                console.log(error)
+            }
         }
-    }
 
-    const handleEditClick = (employee) => {
+    const handleEditClick =
+        (employee) => {
 
-        setSelectedEmployee(employee)
+            setSelectedEmployee(employee)
 
-        setIsEditModalOpen(true)
-    }
+            setIsEditModalOpen(true)
+        }
 
-    const filteredEmployees = employees.filter((employee) =>
+    // SAFE FILTERING
 
-        `${employee.firstName} ${employee.lastName}`
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+    const filteredEmployees =
+        employees.filter((employee) =>
 
-        ||
+            `${employee.firstName || ""}
+             ${employee.lastName || ""}`
 
-        employee.department
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+                .toLowerCase()
 
-        ||
+                .includes(
+                    searchTerm.toLowerCase()
+                )
 
-        employee.role
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-    )
+            ||
+
+            (employee.department || "")
+
+                .toLowerCase()
+
+                .includes(
+                    searchTerm.toLowerCase()
+                )
+
+            ||
+
+            (employee.role || "")
+
+                .toLowerCase()
+
+                .includes(
+                    searchTerm.toLowerCase()
+                )
+
+            ||
+
+            (employee.email || "")
+
+                .toLowerCase()
+
+                .includes(
+                    searchTerm.toLowerCase()
+                )
+        )
 
     return (
 
-        <div className="w-full max-w-7xl mx-auto pb-12 animate-fade-in">
+        <div
+            className="
+                w-full
+                max-w-7xl
+                mx-auto
+                pb-12
+
+                animate-fade-in
+            "
+        >
 
             {/* HEADER */}
 
@@ -97,6 +146,7 @@ function EmployeesPage() {
                     flex
                     flex-col
                     md:flex-row
+
                     md:items-center
                     justify-between
 
@@ -130,6 +180,7 @@ function EmployeesPage() {
                                 rounded-full
 
                                 bg-indigo-500/10
+
                                 border
                                 border-indigo-500/20
 
@@ -142,7 +193,9 @@ function EmployeesPage() {
                             "
                         >
 
-                            {employees.length} Total
+                            {employees.length}
+                            {" "}
+                            Total
 
                         </span>
 
@@ -155,13 +208,24 @@ function EmployeesPage() {
                             text-sm
                         "
                     >
-                        Manage your workforce directory,
-                        roles, and compensation details.
+
+                        Manage your workforce
+                        directory, roles, and
+                        compensation details.
+
                     </p>
 
                 </div>
 
-                <div className="flex items-center gap-4">
+                {/* SEARCH + BUTTON */}
+
+                <div
+                    className="
+                        flex
+                        items-center
+                        gap-4
+                    "
+                >
 
                     {/* SEARCH */}
 
@@ -184,13 +248,11 @@ function EmployeesPage() {
 
                                 text-[#64748B]
                                 text-sm
-
-                                group-focus-within:text-indigo-400
-                                transition-colors
                             "
                         />
 
                         <input
+
                             type="text"
 
                             placeholder="Search employees..."
@@ -198,7 +260,9 @@ function EmployeesPage() {
                             value={searchTerm}
 
                             onChange={(e) =>
-                                setSearchTerm(e.target.value)
+                                setSearchTerm(
+                                    e.target.value
+                                )
                             }
 
                             className="
@@ -206,7 +270,6 @@ function EmployeesPage() {
                                 h-11
 
                                 bg-[#111827]/80
-                                backdrop-blur-sm
 
                                 border
                                 border-[#1E293B]
@@ -224,20 +287,14 @@ function EmployeesPage() {
                                 outline-none
 
                                 focus:border-indigo-500/50
-                                focus:ring-2
-                                focus:ring-indigo-500/20
-                                focus:bg-[#1E293B]/50
 
                                 transition-all
-                                duration-300
-
-                                shadow-sm
                             "
                         />
 
                     </div>
 
-                    {/* ADD EMPLOYEE BUTTON */}
+                    {/* ADD BUTTON */}
 
                     <button
 
@@ -263,19 +320,15 @@ function EmployeesPage() {
                             items-center
                             gap-2
 
-                            shadow-[0_0_15px_rgba(99,102,241,0.3)]
-
-                            hover:shadow-[0_0_25px_rgba(99,102,241,0.5)]
-                            hover:-translate-y-0.5
+                            hover:scale-105
 
                             transition-all
-                            duration-300
-
-                            whitespace-nowrap
                         "
                     >
 
-                        <FaPlus className="text-xs" />
+                        <FaPlus
+                            className="text-xs"
+                        />
 
                         Add Employee
 
@@ -292,6 +345,7 @@ function EmployeesPage() {
                     overflow-hidden
 
                     bg-[#1E293B]/50
+
                     backdrop-blur-xl
 
                     border
@@ -300,19 +354,19 @@ function EmployeesPage() {
                     rounded-3xl
 
                     shadow-xl
-
-                    relative
-                    z-10
                 "
             >
 
-                <div className="overflow-x-auto">
+                <div
+                    className="
+                        overflow-x-auto
+                    "
+                >
 
                     <table
                         className="
                             w-full
                             text-left
-                            border-collapse
                         "
                     >
 
@@ -321,6 +375,7 @@ function EmployeesPage() {
                         <thead
                             className="
                                 bg-[#0B1120]/50
+
                                 border-b
                                 border-[#334155]
                             "
@@ -328,23 +383,75 @@ function EmployeesPage() {
 
                             <tr>
 
-                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                <th
+                                    className="
+                                        p-5
+                                        text-xs
+                                        font-bold
+
+                                        text-[#94A3B8]
+
+                                        uppercase
+                                    "
+                                >
                                     Employee
                                 </th>
 
-                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                <th
+                                    className="
+                                        p-5
+                                        text-xs
+                                        font-bold
+
+                                        text-[#94A3B8]
+
+                                        uppercase
+                                    "
+                                >
                                     Department
                                 </th>
 
-                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                <th
+                                    className="
+                                        p-5
+                                        text-xs
+                                        font-bold
+
+                                        text-[#94A3B8]
+
+                                        uppercase
+                                    "
+                                >
                                     Role
                                 </th>
 
-                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+                                <th
+                                    className="
+                                        p-5
+                                        text-xs
+                                        font-bold
+
+                                        text-[#94A3B8]
+
+                                        uppercase
+                                    "
+                                >
                                     Salary
                                 </th>
 
-                                <th className="p-5 text-xs font-bold text-[#94A3B8] uppercase tracking-wider text-right">
+                                <th
+                                    className="
+                                        p-5
+                                        text-xs
+                                        font-bold
+
+                                        text-[#94A3B8]
+
+                                        uppercase
+
+                                        text-right
+                                    "
+                                >
                                     Actions
                                 </th>
 
@@ -354,32 +461,33 @@ function EmployeesPage() {
 
                         {/* BODY */}
 
-                        <tbody
-                            className="
-                                divide-y
-                                divide-[#334155]/50
-                            "
-                        >
+                        <tbody>
 
                             {filteredEmployees.length > 0 ? (
 
-                                filteredEmployees.map((employee) => (
+                                filteredEmployees.map(
+                                    (employee) => (
 
                                     <tr
                                         key={employee.id}
 
                                         className="
-                                            group
+                                            border-t
+                                            border-[#334155]/50
+
                                             hover:bg-white/[0.02]
 
-                                            transition-colors
-                                            duration-300
+                                            transition-all
                                         "
                                     >
 
                                         {/* EMPLOYEE */}
 
-                                        <td className="p-5">
+                                        <td
+                                            className="
+                                                p-5
+                                            "
+                                        >
 
                                             <div
                                                 className="
@@ -388,6 +496,8 @@ function EmployeesPage() {
                                                     gap-4
                                                 "
                                             >
+
+                                                {/* AVATAR */}
 
                                                 <div
                                                     className="
@@ -410,21 +520,18 @@ function EmployeesPage() {
                                                         text-indigo-300
                                                         text-sm
                                                         font-bold
-
-                                                        group-hover:scale-110
-                                                        group-hover:border-indigo-500/50
-
-                                                        group-hover:shadow-[0_0_15px_rgba(99,102,241,0.2)]
-
-                                                        transition-all
-                                                        duration-300
                                                     "
                                                 >
 
-                                                    {employee.firstName?.charAt(0)}
-                                                    {employee.lastName?.charAt(0)}
+                                                    {(employee.firstName || "U")
+                                                        .charAt(0)}
+
+                                                    {(employee.lastName || "E")
+                                                        .charAt(0)}
 
                                                 </div>
+
+                                                {/* DETAILS */}
 
                                                 <div>
 
@@ -433,16 +540,12 @@ function EmployeesPage() {
                                                             text-sm
                                                             font-bold
                                                             text-white
-
-                                                            group-hover:text-indigo-300
-
-                                                            transition-colors
                                                         "
                                                     >
 
-                                                        {employee.firstName}
+                                                        {employee.firstName || "Unknown"}
                                                         {" "}
-                                                        {employee.lastName}
+                                                        {employee.lastName || "Employee"}
 
                                                     </h3>
 
@@ -455,7 +558,12 @@ function EmployeesPage() {
                                                     >
 
                                                         {employee.email ||
-                                                            `${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}@company.com`
+
+                                                            `${(employee.firstName || "employee")
+                                                                .toLowerCase()}.${
+                                                                (employee.lastName || "user")
+                                                                    .toLowerCase()
+                                                            }@company.com`
                                                         }
 
                                                     </p>
@@ -468,37 +576,14 @@ function EmployeesPage() {
 
                                         {/* DEPARTMENT */}
 
-                                        <td className="p-5">
+                                        <td
+                                            className="
+                                                p-5
+                                                text-white
+                                            "
+                                        >
 
-                                            <span
-                                                className="
-                                                    inline-flex
-                                                    items-center
-
-                                                    px-2.5
-                                                    py-1
-
-                                                    rounded-md
-
-                                                    bg-[#334155]/50
-
-                                                    border
-                                                    border-[#475569]/50
-
-                                                    text-xs
-                                                    font-medium
-
-                                                    text-[#E2E8F0]
-
-                                                    group-hover:border-[#64748B]
-
-                                                    transition-colors
-                                                "
-                                            >
-
-                                                {employee.department}
-
-                                            </span>
+                                            {employee.department || "N/A"}
 
                                         </td>
 
@@ -507,18 +592,11 @@ function EmployeesPage() {
                                         <td
                                             className="
                                                 p-5
-                                                text-sm
-                                                font-medium
-
                                                 text-[#94A3B8]
-
-                                                group-hover:text-white
-
-                                                transition-colors
                                             "
                                         >
 
-                                            {employee.role}
+                                            {employee.role || "N/A"}
 
                                         </td>
 
@@ -527,32 +605,33 @@ function EmployeesPage() {
                                         <td
                                             className="
                                                 p-5
-                                                text-sm
-                                                font-bold
                                                 text-white
+                                                font-bold
                                             "
                                         >
 
-                                            ₹{employee.salary?.toLocaleString()}
+                                            ₹{
+                                                employee.salary
+                                                    ?.toLocaleString()
+                                                || 0
+                                            }
 
                                         </td>
 
                                         {/* ACTIONS */}
 
-                                        <td className="p-5 text-right">
+                                        <td
+                                            className="
+                                                p-5
+                                                text-right
+                                            "
+                                        >
 
                                             <div
                                                 className="
                                                     flex
-                                                    items-center
                                                     justify-end
                                                     gap-2
-
-                                                    opacity-0
-                                                    group-hover:opacity-100
-
-                                                    transition-opacity
-                                                    duration-300
                                                 "
                                             >
 
@@ -561,7 +640,9 @@ function EmployeesPage() {
                                                 <button
 
                                                     onClick={() =>
-                                                        handleEditClick(employee)
+                                                        handleEditClick(
+                                                            employee
+                                                        )
                                                     }
 
                                                     className="
@@ -580,16 +661,11 @@ function EmployeesPage() {
                                                         hover:bg-indigo-500
                                                         hover:text-white
 
-                                                        hover:shadow-[0_0_10px_rgba(99,102,241,0.5)]
-
-                                                        hover:-translate-y-0.5
-
                                                         transition-all
-                                                        duration-300
                                                     "
                                                 >
 
-                                                    <FaEdit className="text-sm" />
+                                                    <FaEdit />
 
                                                 </button>
 
@@ -598,7 +674,9 @@ function EmployeesPage() {
                                                 <button
 
                                                     onClick={() =>
-                                                        handleDelete(employee.id)
+                                                        handleDelete(
+                                                            employee.id
+                                                        )
                                                     }
 
                                                     className="
@@ -617,16 +695,11 @@ function EmployeesPage() {
                                                         hover:bg-red-500
                                                         hover:text-white
 
-                                                        hover:shadow-[0_0_10px_rgba(239,68,68,0.5)]
-
-                                                        hover:-translate-y-0.5
-
                                                         transition-all
-                                                        duration-300
                                                     "
                                                 >
 
-                                                    <FaTrash className="text-sm" />
+                                                    <FaTrash />
 
                                                 </button>
 
@@ -635,7 +708,6 @@ function EmployeesPage() {
                                         </td>
 
                                     </tr>
-
                                 ))
 
                             ) : (
@@ -648,59 +720,12 @@ function EmployeesPage() {
                                         className="
                                             p-12
                                             text-center
+
+                                            text-[#94A3B8]
                                         "
                                     >
 
-                                        <div
-                                            className="
-                                                inline-flex
-                                                items-center
-                                                justify-center
-
-                                                w-16
-                                                h-16
-
-                                                rounded-full
-
-                                                bg-[#334155]/30
-
-                                                mb-4
-                                            "
-                                        >
-
-                                            <FaSearch
-                                                className="
-                                                    text-2xl
-                                                    text-[#64748B]
-                                                "
-                                            />
-
-                                        </div>
-
-                                        <h3
-                                            className="
-                                                text-lg
-                                                font-medium
-                                                text-white
-                                                mb-1
-                                            "
-                                        >
-                                            No employees found
-                                        </h3>
-
-                                        <p
-                                            className="
-                                                text-sm
-                                                text-[#94A3B8]
-                                            "
-                                        >
-
-                                            {searchTerm
-                                                ? "Try adjusting your search terms."
-                                                : "Get started by adding a new employee."
-                                            }
-
-                                        </p>
+                                        No employees found
 
                                     </td>
 
@@ -726,7 +751,9 @@ function EmployeesPage() {
                     setIsModalOpen(false)
                 }
 
-                onEmployeeAdded={fetchEmployees}
+                onEmployeeAdded={
+                    fetchEmployees
+                }
 
             />
 
@@ -742,7 +769,9 @@ function EmployeesPage() {
 
                 employee={selectedEmployee}
 
-                onEmployeeUpdated={fetchEmployees}
+                onEmployeeUpdated={
+                    fetchEmployees
+                }
 
             />
 

@@ -8,9 +8,13 @@ import LandingPage from "./pages/LandingPage"
 import LoginPage from "./pages/LoginPage"
 import DashboardPage from "./pages/DashboardPage"
 import EmployeesPage from "./pages/EmployeesPage"
+import AttendancePage from "./pages/AttendancePage"
+import PayrollPage from "./pages/PayrollPage"
+import LeavePage from "./pages/LeavePage"
 
 import DashboardLayout from "./layouts/DashboardLayout"
 
+import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
 
@@ -20,29 +24,147 @@ function App() {
 
             <Routes>
 
+                {/* LANDING PAGE */}
+
                 <Route
                     path="/"
                     element={<LandingPage />}
                 />
+
+                {/* LOGIN PAGE */}
 
                 <Route
                     path="/login"
                     element={<LoginPage />}
                 />
 
+                {/* DASHBOARD */}
+
                 <Route
+
                     path="/dashboard"
-                    element={<DashboardLayout />}
+
+                    element={
+
+                        <ProtectedRoute
+                            allowedRoles={[
+                                "SUPER_ADMIN",
+                                "HR_ADMIN",
+                                "EMPLOYEE"
+                            ]}
+                        >
+
+                            <DashboardLayout />
+
+                        </ProtectedRoute>
+                    }
                 >
 
-                    <Route
-                        index
-                        element={<DashboardPage />}
-                    />
+                    {/* DASHBOARD HOME */}
 
                     <Route
+
+                        index
+
+                        element={
+
+                            <ProtectedRoute
+                                allowedRoles={[
+                                    "SUPER_ADMIN",
+                                    "HR_ADMIN"
+                                ]}
+                            >
+
+                                <DashboardPage />
+
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* EMPLOYEES */}
+
+                    <Route
+
                         path="employees"
-                        element={<EmployeesPage />}
+
+                        element={
+
+                            <ProtectedRoute
+                                allowedRoles={[
+                                    "SUPER_ADMIN",
+                                    "HR_ADMIN"
+                                ]}
+                            >
+
+                                <EmployeesPage />
+
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* ATTENDANCE */}
+
+                    <Route
+
+                        path="attendance"
+
+                        element={
+
+                            <ProtectedRoute
+                                allowedRoles={[
+                                    "SUPER_ADMIN",
+                                    "HR_ADMIN",
+                                    "EMPLOYEE"
+                                ]}
+                            >
+
+                                <AttendancePage />
+
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* PAYROLL */}
+
+                    <Route
+
+                        path="payroll"
+
+                        element={
+
+                            <ProtectedRoute
+                                allowedRoles={[
+                                    "SUPER_ADMIN",
+                                    "HR_ADMIN"
+                                ]}
+                            >
+
+                                <PayrollPage />
+
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* LEAVES */}
+
+                    <Route
+
+                        path="leaves"
+
+                        element={
+
+                            <ProtectedRoute
+                                allowedRoles={[
+                                    "SUPER_ADMIN",
+                                    "HR_ADMIN",
+                                    "EMPLOYEE"
+                                ]}
+                            >
+
+                                <LeavePage />
+
+                            </ProtectedRoute>
+                        }
                     />
 
                 </Route>

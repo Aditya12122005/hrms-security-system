@@ -51,3 +51,37 @@ export const updateEmployee = async (id, employeeData) => {
 
     return response.data
 }
+export const getDashboardStats = async () => {
+
+    const token = localStorage.getItem("token")
+
+    const response = await axios.get(
+
+        "http://localhost:8080/api/employees/dashboard-stats",
+
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    return response.data
+}
+export const getDepartmentStats = async () => {
+
+    const token = localStorage.getItem("token")
+
+    const response = await axios.get(
+
+        "http://localhost:8080/api/employees/department-stats",
+
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    return response.data
+}

@@ -6,11 +6,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 
-public class AuthResponse {
+public class DepartmentStatsDTO {
 
-    private String message;
+    private String department;
 
-    private String token;
-
-    private String role;
+    private Long employees;
 }

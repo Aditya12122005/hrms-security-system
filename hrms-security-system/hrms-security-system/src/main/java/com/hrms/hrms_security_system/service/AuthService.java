@@ -3,15 +3,22 @@ package com.hrms.hrms_security_system.service;
 import com.hrms.hrms_security_system.dto.AuthResponse;
 import com.hrms.hrms_security_system.dto.LoginRequest;
 import com.hrms.hrms_security_system.dto.RegisterRequest;
+
 import com.hrms.hrms_security_system.entity.User;
+
 import com.hrms.hrms_security_system.repository.UserRepository;
+
 import com.hrms.hrms_security_system.util.JwtUtil;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -20,23 +27,42 @@ public class AuthService {
 
     private final JwtUtil jwtUtil;
 
+    // REGISTER USER
+
     public String register(RegisterRequest request) {
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(
+                request.getEmail()
+        )) {
+
             return "Email already exists";
         }
 
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUsername(
+                request.getUsername()
+        )) {
+
             return "Username already exists";
         }
 
         User user = User.builder()
+
                 .firstName(request.getFirstName())
+
                 .lastName(request.getLastName())
+
                 .email(request.getEmail())
+
                 .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
+
+                .password(
+                        passwordEncoder.encode(
+                                request.getPassword()
+                        )
+                )
+
                 .role(request.getRole())
+
                 .build();
 
         userRepository.save(user);
@@ -44,24 +70,46 @@ public class AuthService {
         return "User Registered Successfully";
     }
 
-    public AuthResponse login(LoginRequest request) {
+    // LOGIN USER
 
-        User user = userRepository.findByUsername(request.getUsername())
+    public AuthResponse login(
+            LoginRequest request
+    ) {
+
+        User user = userRepository
+                .findByUsername(
+                        request.getUsername()
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid username or password"));
+
+                        new RuntimeException(
+                                "Invalid username or password"
+                        )
+                );
 
         if (!passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword())) {
 
-            throw new RuntimeException("Invalid username or password");
+                request.getPassword(),
+
+                user.getPassword()
+        )) {
+
+            throw new RuntimeException(
+                    "Invalid username or password"
+            );
         }
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(
+                user.getUsername()
+        );
 
-        return AuthResponse.builder()
-                .message("Login Successful")
-                .token(token)
-                .build();
+        return new AuthResponse(
+
+                "Login successful",
+
+                token,
+
+                user.getRole().name()
+        );
     }
 }

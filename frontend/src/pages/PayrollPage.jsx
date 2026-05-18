@@ -12,6 +12,9 @@ import {
 
 } from "../services/payrollService"
 
+import generatePayrollPDF
+from "../utils/generatePayrollPDF"
+
 function PayrollPage() {
 
     const [payrolls,
@@ -172,6 +175,13 @@ function PayrollPage() {
                                 Net Salary
                             </th>
 
+                            {/* PDF HEADER */}
+
+                            <th className="p-6 text-left">
+                                PDF
+                            </th>
+
+
                         </tr>
 
                     </thead>
@@ -246,6 +256,40 @@ function PayrollPage() {
                                     ₹{
                                         payroll.netSalary
                                     }
+
+                                </td>
+
+                                {/* DOWNLOAD PDF BUTTON */}
+
+                                <td className="p-6">
+
+                                    <button
+
+                                        onClick={() =>
+                                            generatePayrollPDF(
+                                                payroll
+                                            )
+                                        }
+
+                                        className="
+                                            px-4
+                                            py-2
+
+                                            rounded-xl
+
+                                            bg-indigo-500/20
+
+                                            text-indigo-400
+
+                                            hover:bg-indigo-500/30
+
+                                            transition-all
+                                        "
+                                    >
+
+                                        Download PDF
+
+                                    </button>
 
                                 </td>
 

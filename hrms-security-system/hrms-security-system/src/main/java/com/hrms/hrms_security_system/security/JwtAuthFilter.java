@@ -1,99 +1,178 @@
 package com.hrms.hrms_security_system.security;
 
-
 import com.hrms.hrms_security_system.service.CustomUserDetailsService;
 import com.hrms.hrms_security_system.util.JwtUtil;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.
-        UsernamePasswordAuthenticationToken;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.
-        WebAuthenticationDetailsSource;
+
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+
+public class JwtAuthFilter
+        extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    private final CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService
+            userDetailsService;
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
 
-            throws ServletException, IOException {
+            HttpServletRequest request,
+
+            HttpServletResponse response,
+
+            FilterChain filterChain
+
+    ) throws ServletException, IOException {
+
+        String path =
+                request.getServletPath();
+
+        System.out.println(
+                "Request Path: " + path
+        );
+
+        // PUBLIC APIs + STATIC FILES
+
+        if (path.startsWith("/api/auth")
+
+                ||
+
+                path.startsWith("/api/otp")
+
+                ||
+
+                path.startsWith("/api/documents")
+
+                ||
+
+                path.startsWith("/uploads")) {
+
+            filterChain.doFilter(
+                    request,
+                    response
+            );
+
+            return;
+        }
+
+        // AUTH HEADER
 
         final String authHeader =
                 request.getHeader("Authorization");
 
-        final String jwt;
+        System.out.println(
+                "Authorization Header: " + authHeader
+        );
 
-        final String username;
+        String username = null;
 
-        String path = request.getServletPath();
+        String jwt = null;
 
-        if (path.startsWith("/api/auth") ||
-                path.startsWith("/api/employees")) {
+        // EXTRACT JWT
 
-            filterChain.doFilter(request, response);
+        if (authHeader != null
 
-            return;
+                &&
+
+                authHeader.startsWith("Bearer ")) {
+
+            jwt =
+                    authHeader.substring(7);
+
+            try {
+
+                username =
+                        jwtUtil.extractUsername(jwt);
+
+            } catch (Exception e) {
+
+                filterChain.doFilter(
+                        request,
+                        response
+                );
+
+                return;
+            }
         }
 
-        if (authHeader == null ||
-                !authHeader.startsWith("Bearer ")) {
+        // VALIDATE TOKEN
 
-            filterChain.doFilter(request, response);
+        if (username != null
 
-            return;
-        }
+                &&
 
-
-        jwt = authHeader.substring(7);
-
-        username = jwtUtil.extractUsername(jwt);
-
-        if (username != null &&
-                SecurityContextHolder.getContext()
+                SecurityContextHolder
+                        .getContext()
                         .getAuthentication() == null) {
 
             UserDetails userDetails =
+
                     userDetailsService
-                            .loadUserByUsername(username);
+                            .loadUserByUsername(
+                                    username
+                            );
 
             if (jwtUtil.validateToken(
+
                     jwt,
-                    userDetails.getUsername())) {
+
+                    userDetails.getUsername()
+            )) {
 
                 UsernamePasswordAuthenticationToken authToken =
+
                         new UsernamePasswordAuthenticationToken(
+
                                 userDetails,
+
                                 null,
+
                                 userDetails.getAuthorities()
                         );
 
                 authToken.setDetails(
+
                         new WebAuthenticationDetailsSource()
+
                                 .buildDetails(request)
                 );
 
-                SecurityContextHolder.getContext()
+                SecurityContextHolder
+
+                        .getContext()
+
                         .setAuthentication(authToken);
             }
         }
 
-        filterChain.doFilter(request, response);
+        // CONTINUE FILTER
+
+        filterChain.doFilter(
+                request,
+                response
+        );
     }
 }

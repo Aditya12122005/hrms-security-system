@@ -24,6 +24,9 @@ public class PayrollService {
     private final EmployeeRepository
             employeeRepository;
 
+    private final EmailService
+            emailService;
+
     // GENERATE PAYROLL
 
     public Payroll generatePayroll(
@@ -70,8 +73,27 @@ public class PayrollService {
 
                         .build();
 
-        return payrollRepository
-                .save(payroll);
+        // SAVE PAYROLL
+
+        Payroll savedPayroll =
+                payrollRepository.save(payroll);
+
+        // SEND EMAIL
+
+        emailService.sendEmail(
+
+                employee.getEmail(),
+
+                "Payroll Generated",
+
+                "Hello " +
+
+                        employee.getFirstName() +
+
+                        ", your payroll has been generated successfully."
+        );
+
+        return savedPayroll;
     }
 
     // GET ALL PAYROLLS

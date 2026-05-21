@@ -4,6 +4,7 @@ import com.hrms.hrms_security_system.dto.AuthResponse;
 import com.hrms.hrms_security_system.dto.LoginRequest;
 import com.hrms.hrms_security_system.dto.RegisterRequest;
 
+import com.hrms.hrms_security_system.entity.Role;
 import com.hrms.hrms_security_system.entity.User;
 
 import com.hrms.hrms_security_system.repository.UserRepository;
@@ -12,7 +13,7 @@ import com.hrms.hrms_security_system.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
@@ -21,71 +22,99 @@ import org.springframework.stereotype.Service;
 
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final UserRepository
+            userRepository;
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder
+            passwordEncoder;
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtil
+            jwtUtil;
 
     // REGISTER USER
 
-    public String register(RegisterRequest request) {
+    public String register(
+
+            RegisterRequest request
+
+    ) {
+
+        // CHECK EMAIL EXISTS
 
         if (userRepository.existsByEmail(
+
                 request.getEmail()
         )) {
 
             return "Email already exists";
         }
 
+        // CHECK USERNAME EXISTS
+
         if (userRepository.existsByUsername(
+
                 request.getUsername()
         )) {
 
             return "Username already exists";
         }
 
-        User user = User.builder()
+        // CREATE USER
 
-                .firstName(request.getFirstName())
+        User user =
 
-                .lastName(request.getLastName())
+                User.builder()
 
-                .email(request.getEmail())
-
-                .username(request.getUsername())
-
-                .password(
-                        passwordEncoder.encode(
-                                request.getPassword()
+                        .username(
+                                request.getUsername()
                         )
-                )
 
-                .role(request.getRole())
+                        .email(
+                                request.getEmail()
+                        )
 
-                .build();
+                        .password(
+
+                                passwordEncoder.encode(
+                                        request.getPassword()
+                                )
+                        )
+
+                        .role(
+                                Role.EMPLOYEE
+                        )
+
+                        .build();
 
         userRepository.save(user);
 
-        return "User Registered Successfully";
+        return "User registered successfully";
     }
 
     // LOGIN USER
 
     public AuthResponse login(
+
             LoginRequest request
+
     ) {
 
-        User user = userRepository
-                .findByUsername(
-                        request.getUsername()
-                )
-                .orElseThrow(() ->
+        User user =
 
-                        new RuntimeException(
-                                "Invalid username or password"
+                userRepository
+
+                        .findByUsername(
+                                request.getUsername()
                         )
-                );
+
+                        .orElseThrow(() ->
+
+                                new RuntimeException(
+                                        "Invalid username"
+                                )
+                        );
+
+        // CHECK PASSWORD
 
         if (!passwordEncoder.matches(
 
@@ -95,13 +124,17 @@ public class AuthService {
         )) {
 
             throw new RuntimeException(
-                    "Invalid username or password"
+                    "Invalid password"
             );
         }
 
-        String token = jwtUtil.generateToken(
-                user.getUsername()
-        );
+        // GENERATE JWT TOKEN USING EMAIL
+
+        String token =
+
+                jwtUtil.generateToken(
+                        user.getEmail()
+                );
 
         return new AuthResponse(
 

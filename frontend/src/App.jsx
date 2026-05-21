@@ -11,6 +11,9 @@ import EmployeesPage from "./pages/EmployeesPage"
 import AttendancePage from "./pages/AttendancePage"
 import PayrollPage from "./pages/PayrollPage"
 import LeavePage from "./pages/LeavePage"
+import ForgotPasswordPage from "./pages/ForgotPasswordPage"
+import VerifyOtpPage from "./pages/VerifyOtpPage"
+import ResetPasswordPage from "./pages/ResetPasswordPage"
 
 import DashboardLayout from "./layouts/DashboardLayout"
 
@@ -168,6 +171,20 @@ function App() {
                     />
 
                 </Route>
+                <Route
+                    path="/forgot-password"
+                    element={<ForgotPasswordPage />}
+                />
+
+                <Route
+                    path="/verify-otp"
+                    element={<VerifyOtpPage />}
+                />
+
+                <Route
+                    path="/reset-password"
+                    element={<ResetPasswordPage />}
+                />
 
             </Routes>
 

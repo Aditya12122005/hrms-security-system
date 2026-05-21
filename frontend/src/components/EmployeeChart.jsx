@@ -2,23 +2,44 @@ import { useEffect, useState } from "react"
 
 import {
 
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
     ResponsiveContainer,
-    CartesianGrid
+
+    PieChart,
+
+    Pie,
+
+    Cell,
+
+    Tooltip,
+
+    Legend
 
 } from "recharts"
 
-import {
-    getDepartmentStats
-} from "../services/employeeService"
+import { getDepartmentStats } from "../services/employeeService"
 
 function EmployeeChart() {
 
-    const [data, setData] = useState([])
+    const [chartData, setChartData] = useState([])
+
+    const [loading, setLoading] = useState(true)
+
+    const [error, setError] = useState("")
+
+    const COLORS = [
+
+        "#6366F1",
+
+        "#8B5CF6",
+
+        "#06B6D4",
+
+        "#10B981",
+
+        "#F59E0B",
+
+        "#EF4444"
+    ]
 
     useEffect(() => {
 
@@ -30,84 +51,151 @@ function EmployeeChart() {
 
         try {
 
-            const response =
-                await getDepartmentStats()
+            setLoading(true)
 
-            setData(response)
+            const data = await getDepartmentStats()
 
-        } catch (error) {
+            setChartData(data)
 
-            console.log(error)
+        } catch (err) {
+
+            console.error(err)
+
+            setError("Failed to load chart data")
+
+        } finally {
+
+            setLoading(false)
         }
+    }
+
+    if (loading) {
+
+        return (
+
+            <div className="bg-[#111827] border border-white/10 rounded-3xl p-6 h-[450px] flex items-center justify-center">
+
+                <p className="text-gray-400 text-sm animate-pulse">
+
+                    Loading analytics...
+
+                </p>
+
+            </div>
+        )
+    }
+
+    if (error) {
+
+        return (
+
+            <div className="bg-[#111827] border border-red-500/20 rounded-3xl p-6 h-[450px] flex items-center justify-center">
+
+                <p className="text-red-400 text-sm">
+
+                    {error}
+
+                </p>
+
+            </div>
+        )
     }
 
     return (
 
-        <div
-            className="
-                bg-white
+        <div className="bg-[#111827]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-xl">
 
-                border
-                border-slate-200
+            {/* HEADER */}
 
-                rounded-3xl
+            <div className="flex items-center justify-between mb-8">
 
-                p-8
+                <div>
 
-                shadow-sm
-            "
-        >
+                    <h2 className="text-2xl font-bold text-white">
 
-            <div className="mb-6">
+                        Department Analytics
 
-                <h2
-                    className="
-                        text-xl
-                        font-bold
-                        text-slate-900
-                    "
-                >
-                    Department Analytics
-                </h2>
+                    </h2>
 
-                <p
-                    className="
-                        text-sm
-                        text-slate-500
-                        mt-1
-                    "
-                >
-                    Real-time employee distribution
-                    by department.
-                </p>
+                    <p className="text-sm text-gray-400 mt-1">
+
+                        Employee distribution across departments
+
+                    </p>
+
+                </div>
+
+                <div className="w-3 h-3 rounded-full bg-indigo-500 animate-pulse" />
 
             </div>
 
-            <div className="h-[350px]">
+            {/* CHART CONTAINER */}
 
-                <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                >
+            <div className="w-full h-[400px]">
 
-                    <BarChart data={data}>
+                <ResponsiveContainer width="100%" height="100%">
 
-                        <CartesianGrid
-                            strokeDasharray="3 3"
+                    <PieChart>
+
+                        <Pie
+
+                            data={chartData}
+
+                            dataKey="count"
+
+                            nameKey="department"
+
+                            cx="50%"
+
+                            cy="50%"
+
+                            outerRadius={130}
+
+                            innerRadius={70}
+
+                            paddingAngle={3}
+
+                            label={({ department, percent }) =>
+
+                                `${department} ${(percent * 100).toFixed(0)}%`
+                            }
+                        >
+
+                            {chartData.map((entry, index) => (
+
+                                <Cell
+
+                                    key={`cell-${index}`}
+
+                                    fill={
+
+                                        COLORS[
+                                        index % COLORS.length
+                                        ]
+                                    }
+                                />
+
+                            ))}
+
+                        </Pie>
+
+                        <Tooltip
+
+                            contentStyle={{
+
+                                backgroundColor: "#0F172A",
+
+                                border: "1px solid rgba(255,255,255,0.1)",
+
+                                borderRadius: "16px",
+
+                                color: "#fff"
+                            }}
                         />
 
-                        <XAxis dataKey="department" />
+                        <Legend />
 
-                        <YAxis />
-
-                        <Tooltip />
-
-                        <Bar
-                            dataKey="employees"
-                            radius={[10, 10, 0, 0]}
-                        />
-
-                    </BarChart>
+                    </PieChart>
 
                 </ResponsiveContainer>
 

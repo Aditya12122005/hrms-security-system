@@ -2,15 +2,14 @@ import { Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import FeatureCard from "../components/FeatureCard"
 import Footer from "../components/Footer"
+import ThreeBackground from "../components/ThreeBackground"
 
 function LandingPage() {
     return (
         <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-500/30 overflow-hidden relative">
             
-            {/* AMBIENT BACKGROUND GLOWS */}
-            <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-orange-300/30 blur-[150px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[20%] right-[-10%] w-[800px] h-[800px] bg-pink-300/30 blur-[150px] rounded-full pointer-events-none" />
-            <div className="absolute top-[40%] left-[50%] w-[600px] h-[600px] bg-yellow-300/20 blur-[120px] rounded-full pointer-events-none translate-x-[-50%]" />
+            {/* THREE.JS PARTICLE BACKGROUND */}
+            <ThreeBackground />
 
             {/* NAVBAR */}
             <div className="relative z-50">

@@ -136,14 +136,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/department-stats")
-
-    public ResponseEntity<Map<String, Long>>
-    getDepartmentStats() {
-
-        return ResponseEntity.ok(
-
-                (Map<String, Long>) employeeService
-                        .getDepartmentStats()
-        );
+    public ResponseEntity<List<com.hrms.hrms_security_system.dto.DepartmentStatsDTO>> getDepartmentStats() {
+        return ResponseEntity.ok(employeeService.getDepartmentStats());
     }
 }

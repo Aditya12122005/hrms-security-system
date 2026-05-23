@@ -47,7 +47,7 @@ export const resetPassword = async (
 
     const response = await axios.post(
 
-        `${API_URL}/auth/reset-password`,
+        `${API_URL}/otp/reset-password`,
 
         {
             email,

@@ -7,6 +7,7 @@ import {
     FaChartBar,
     FaMoneyBillWave,
     FaCalendarAlt,
+    FaFolderOpen,
     FaCog,
     FaUser,
     FaSignOutAlt
@@ -82,6 +83,20 @@ function Sidebar() {
             icon: <FaCalendarAlt />,
 
             path: "/dashboard/attendance",
+
+            roles: [
+                "SUPER_ADMIN",
+                "HR_ADMIN",
+                "EMPLOYEE"
+            ]
+        },
+
+        {
+            title: "Documents",
+
+            icon: <FaFolderOpen />,
+
+            path: "/dashboard/documents",
 
             roles: [
                 "SUPER_ADMIN",

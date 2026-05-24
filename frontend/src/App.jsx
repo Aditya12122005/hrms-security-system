@@ -11,6 +11,7 @@ import EmployeesPage from "./pages/EmployeesPage"
 import AttendancePage from "./pages/AttendancePage"
 import PayrollPage from "./pages/PayrollPage"
 import LeavePage from "./pages/LeavePage"
+import DocumentsPage from "./pages/DocumentsPage"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import VerifyOtpPage from "./pages/VerifyOtpPage"
 import ResetPasswordPage from "./pages/ResetPasswordPage"
@@ -165,6 +166,28 @@ function App() {
                             >
 
                                 <LeavePage />
+
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* DOCUMENTS */}
+
+                    <Route
+
+                        path="documents"
+
+                        element={
+
+                            <ProtectedRoute
+                                allowedRoles={[
+                                    "SUPER_ADMIN",
+                                    "HR_ADMIN",
+                                    "EMPLOYEE"
+                                ]}
+                            >
+
+                                <DocumentsPage />
 
                             </ProtectedRoute>
                         }
